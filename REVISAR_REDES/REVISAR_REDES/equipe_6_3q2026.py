@@ -323,6 +323,10 @@ def executar(n, modo, transporte, padrao, duracao, semente, rodada,
              mostrar_progresso=True):
     ns.RngSeedManager.SetSeed(semente)
     ns.RngSeedManager.SetRun(rodada)
+    # O ns-3 numera os fluxos aleatórios com um contador global que não volta a
+    # zero em Simulator::Destroy. Sem este reset, o resultado de um cenário
+    # dependeria dos cenários executados antes no mesmo processo.
+    ns.RngSeedManager.ResetNextStreamIndex()
     try:
         clientes, servidor, ips_clientes = topologia(n, modo, duracao)
         configs = aplicacoes(clientes, servidor, ips_clientes, transporte, padrao, duracao)

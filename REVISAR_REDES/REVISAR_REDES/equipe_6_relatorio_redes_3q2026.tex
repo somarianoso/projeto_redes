@@ -68,7 +68,7 @@ mas não geram aplicações. O roteamento IP é configurado automaticamente.
 
 \section{Avaliação de desempenho}
 \subsection{Metodologia}
-A implementação usa ns-3 3.44 \cite{ns3} com interface Python 3.12.3 e o modelo Wi-Fi
+A implementação usa ns-3 3.44 \cite{ns3} com interface Python 3.10.12 e o modelo Wi-Fi
 Yans para IEEE 802.11a. O servidor instala uma aplicação \texttt{OnOff} por
 cliente; cada cliente instala seu próprio \texttt{PacketSink}. As fontes
 iniciam aproximadamente em \(t=4\)~s, terminam em \(t=58\)~s e os receptores
@@ -81,7 +81,8 @@ transporte, aplicação e número de clientes. Para \(n\geq2\), o modo misto
 divide igualmente os clientes entre UDP e TCP. Com \(n=1\), uma divisão
 50\%/50\% é impossível; o único cliente usa UDP. Cada combinação foi executada
 uma vez, por 60~s simulados, com semente 6 e número de rodada definido pela
-combinação. Não são apresentados intervalos de confiança: as comparações são
+combinação; o contador de fluxos aleatórios do ns-3 é reiniciado a cada
+cenário, de modo que o resultado não depende da ordem de execução. Não são apresentados intervalos de confiança: as comparações são
 descritivas desta realização, não estimativas estatísticas de múltiplas
 sementes. No caso misto com dois clientes e padrão CBR/Rajada, os protocolos
 coincidem com padrões distintos; essa combinação não isola o efeito de cada
@@ -95,11 +96,11 @@ correspondente é invertida antes do passo. A velocidade entre mudanças é impl
 região central, dentro da área de 140~m \(\times\) 140~m. Cada cliente móvel
 tem um fluxo pseudoaleatório próprio, reproduzível pela semente e pela rodada.
 
-Os experimentos foram executados em Ubuntu 24.04.3 LTS sob WSL2, em uma
-máquina com Intel Core i7-9700K a 3,60~GHz (8 núcleos lógicos) e 7,7~GiB de
-memória disponibilizada ao ambiente. Três processos independentes puderam
-rodar cenários em paralelo; isso reduz o tempo de execução real, sem alterar
-os 60~s de tempo simulado de cada cenário.
+Os experimentos foram executados em Ubuntu 22.04.5 LTS sob WSL2, em uma
+máquina com Intel Core i5-12450H (12 núcleos lógicos) e 3,7~GiB de
+memória disponibilizada ao ambiente. Até três processos independentes
+rodaram cenários em paralelo; isso reduz o tempo de execução real, sem alterar
+os 60~s de tempo simulado nem os resultados de cada cenário.
 
 \subsection{Parâmetros e métricas}
 \begin{table}[ht]
@@ -152,7 +153,7 @@ O padrão de aplicação explica a tendência principal da vazão
 (Figura~\ref{fig:vazao}). Com 32 clientes, a oferta de dados de aplicação é
 16,384~Mbit/s em CBR, aproximadamente 8,192~Mbit/s em rajada e
 12,288~Mbit/s em CBR/Rajada. No UDP estático, as vazões IP recebidas foram,
-respectivamente, 16,757, 8,624 e 12,953~Mbit/s. Os valores IP podem exceder
+respectivamente, 16,757, 8,624 e 12,954~Mbit/s. Os valores IP podem exceder
 a taxa de dados da aplicação porque incluem cabeçalhos. A LAN cabeada de
 100~Mbit/s comporta essas ofertas; a disputa e o enfileiramento tendem a se
 concentrar no único rádio do AP. Essa é uma interpretação da topologia, não
@@ -160,10 +161,10 @@ uma medição direta da ocupação do canal.
 
 O aumento de carga nem sempre se traduz imediatamente em perda: no UDP/CBR
 estático com 32 clientes, 97,0\% dos pacotes chegaram, mas o atraso médio já
-era 159,9~ms. No UDP/Rajada estático com 32 clientes, o atraso foi 16,6~ms e
+era 159,9~ms. No UDP/Rajada estático com 32 clientes, o atraso foi 16,8~ms e
 a perda, 0,1\%. Pacotes que aguardam acesso ao meio ainda podem ser entregues,
 e a alternância entre períodos ativos e inativos reduz a oferta média. O
-CBR/Rajada estático obteve atraso de 12,0~ms apesar da oferta média maior que
+CBR/Rajada estático obteve atraso de 12,4~ms apesar da oferta média maior que
 a rajada pura; uma explicação compatível é que a combinação distribui parte
 da carga continuamente, enquanto as rajadas de clientes sincronizados geram
 picos simultâneos. Não foram coletados rastros de fila para confirmar essa
@@ -193,21 +194,21 @@ hipótese.
 
 \subsection{Discussão dos resultados}
 A mobilidade teve efeito variável (Figuras~\ref{fig:atraso} e
-\ref{fig:perda}). Em UDP/CBR-Rajada com 32 clientes, a vazão caiu de 12,953
-para 10,316~Mbit/s, a perda subiu de aproximadamente zero para 20,4\% e o
-atraso passou de 12,0 para 148,0~ms. No CBR misto com 32 clientes, a entrega
-caiu de 97,4\% para 80,7\%, e o atraso aumentou de 172,2 para 230,0~ms.
+\ref{fig:perda}). Em UDP/CBR-Rajada com 32 clientes, a vazão caiu de 12,954
+para 10,313~Mbit/s, a perda subiu de aproximadamente zero para 20,4\% e o
+atraso passou de 12,4 para 148,0~ms. No CBR misto com 32 clientes, a entrega
+caiu de 97,3\% para 80,5\%, e o atraso aumentou de 172,7 para 232,3~ms.
 O deslocamento altera distâncias ao AP e condições de propagação; junto à
 contenção pelo canal, isso é compatível com as degradações observadas.
 Entretanto, trajetórias diferentes e uma única rodada por combinação impedem
 atribuir com certeza cada diferença somente à mobilidade.
 
-O TCP não eliminou atrasos: em CBR com 32 clientes, o atraso foi 186,6~ms no
-estático e 192,7~ms no móvel, embora a perda IP tenha ficado em 1,4\% em
-ambos. Retransmissões, confirmações e controle de fluxo influenciam tanto a
+O TCP não eliminou atrasos: em CBR com 32 clientes, o atraso foi 183,7~ms no
+estático e 181,6~ms no móvel, embora a perda IP tenha ficado em 1,2\% e
+1,5\%, respectivamente. Retransmissões, confirmações e controle de fluxo influenciam tanto a
 vazão quanto as contagens de pacotes IP. Entre os indicadores adicionais, o
-jitter médio em TCP/Rajada com 32 clientes cresceu de 1,5~ms no estático para
-8,2~ms no móvel. A justiça de Jain foi 0,879 no UDP/CBR-Rajada móvel com
+jitter médio em TCP/Rajada com 32 clientes cresceu de 2,1~ms no estático para
+3,9~ms no móvel. A justiça de Jain foi 0,878 no UDP/CBR-Rajada móvel com
 32 clientes. Nesse padrão, porém, os clientes já possuem ofertas distintas;
 um índice inferior a um não prova, isoladamente, distribuição injusta do
 canal. Os dados não incluem rastros MAC/PHY nem repetições com outras
