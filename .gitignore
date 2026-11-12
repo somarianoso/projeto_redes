@@ -1,0 +1,12 @@
+# LaTeX
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.xdv
+*.synctex.gz
+# Python / ns-3
+__pycache__/
+.venv/
+resultados_teste_rapido/
