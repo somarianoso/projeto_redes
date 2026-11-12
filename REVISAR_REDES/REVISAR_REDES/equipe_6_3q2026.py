@@ -13,11 +13,19 @@ Integrantes e responsabilidades no código:
     15511213 Sophia Soares Mariano      - gráficos, figura da topologia, redação do
                                           relatório e revisão final do script
 
+Instalação do ns-3 (bindings Python): pip install ns3==3.44.post0
 Execute todos os 108 cenários: .venv/bin/python equipe_6_3q2026.py
 Continuar em paralelo: .venv/bin/python -u equipe_6_3q2026.py --continuar --processos 3
+    (cada processo usa cerca de 700 MB de memória; com pouca RAM, use --processos 1)
 Teste rápido: .venv/bin/python equipe_6_3q2026.py --rapido
 Teste um cenário:
     .venv/bin/python equipe_6_3q2026.py --mobilidade estatico --transporte udp --aplicacao cbr --clientes 2 --duracao 10
+Gráficos do relatório: python3 graficos_equipe_6.py resultados_equipe_6/resumo.csv figuras
+
+O número da rodada (que, com a semente, define os sorteios) é a posição do
+cenário na lista selecionada. Por isso, um cenário rodado isoladamente não
+repete o valor do resumo.csv dos 108 cenários; a execução completa, em série
+ou em paralelo, sempre gera os mesmos resultados.
 
 Os CSVs contêm contadores de pacotes/bytes IP, entrega, perda, vazão,
 atraso, jitter e justiça de Jain. A vazão é calculada na janela de tráfego

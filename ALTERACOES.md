@@ -30,7 +30,7 @@ Os dois arquivos estão em `REVISAR_REDES/REVISAR_REDES/` e já estão prontos p
 | Arquivo | Situação |
 | --- | --- |
 | `equipe_6_relatorio_redes_3q2026.pdf` | Nome no padrão exigido; 8 páginas (o limite é 8); fontes embutidas; sem referências quebradas |
-| `equipe_6_3q2026.py` | Nome no padrão exigido; erro que impedia a execução corrigido |
+| `equipe_6_3q2026.py` | Nome no padrão exigido; erro que impedia a execução corrigido; resultados reproduzíveis |
 
 Prazo: **17/11/2026, até 23h59**. Uma única pessoa do grupo envia.
 
@@ -122,3 +122,15 @@ Para rodar os testes: `python -m unittest -v testes/test_requisitos.py`, com um 
 
 - `.gitignore` criado para ignorar os arquivos auxiliares do LaTeX, `__pycache__`, `.venv` e `resultados_teste_rapido/`.
 - Repositório no GitHub configurado como **privado**, porque contém nomes e números USP.
+- Conteúdo de `REVISAR_REDES/REVISAR_REDES/`:
+
+| Arquivo ou pasta | O que é |
+| --- | --- |
+| `equipe_6_3q2026.py` | Script de simulação (entregável) |
+| `equipe_6_relatorio_redes_3q2026.pdf` / `.tex` | Relatório (entregável) e seu código-fonte LaTeX |
+| `figuras/` e `sbc-template.sty` | Arquivos necessários para compilar o relatório |
+| `graficos_equipe_6.py` | Gera as Figuras 2 a 4 a partir do `resumo.csv` |
+| `resultados_equipe_6/` | `resumo.csv` (108 cenários) e `fluxos.csv` (um fluxo por cliente) |
+
+- `testes/test_requisitos.py`: testes que comprovam os requisitos do enunciado.
+- A docstring do script passou a explicar como instalar o ns-3 e a memória usada por processo. Ela também explica por que um cenário rodado sozinho não repete o valor do `resumo.csv`: o número da rodada é a posição do cenário na lista selecionada.
